@@ -3,6 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const parse = require('csv-parse');
+var Pusher = require('pusher');
+
+var pusher = new Pusher({
+  appId: 'APP_ID',
+  key: 'APP_KEY',
+  secret: 'APP_SECRET',
+  cluster: 'APP_CLUSTER'
+});
 
 //const unzipper = require('unzipper');
 
@@ -16,8 +24,6 @@ const app = express();
 app.use(cors());
 
 var all = []
-var medical = [];
-var commercial = [];
 
 const httpserver = require('http').createServer(app);
 var server = socketio(httpserver);
