@@ -6,29 +6,61 @@ const parse = require('csv-parse');
 var Pusher = require('pusher');
 
 var pusher = new Pusher({
-  appId: 'APP_ID',
-  key: 'APP_KEY',
-  secret: 'APP_SECRET',
-  cluster: 'APP_CLUSTER'
+  appId: '1063456',
+  key: 'e17dd7a5b13d4f40fe26',
+  secret: '15ed3a6d43ec1d894c8b',
+  cluster: 'ap2',
+  encrypted: true
 });
+
+var subsbus = [];
+var subsroute = [];
 
 //const unzipper = require('unzipper');
 
 /*fs.createReadStream('data/data.zip')
   .pipe(unzipper.Extract({ path: '' }));*/
 
-var count = 0;
+/*var count = 0;
 var isSimulationEnabled = false;
+*/
+
+function start() {
+  var datastream;
+
+  datastream = fs.createReadStream('data/data.csv');
+  datastream
+        .pipe(parse({delimiter: ','}))
+        .on('data', (csvrow) => {
+          
+        })
+        .on('end', () => {
+          datastream.destroy();
+          //console.log(count);
+  });
+}
+
+start();
 
 const app = express();
 app.use(cors());
 
-var all = []
-
 const httpserver = require('http').createServer(app);
-var server = socketio(httpserver);
+
+app.get('/subscribe/bus/:id', (req, res) => {
+  subsbus.push(req.params.id);
+  res.send("subscribed "+req.params.id);
+});
+
+app.get('/subscribe/route/:id', (req, res) => {
+  subsroute.push(req.params.id);
+  res.send("subscribed "+req.params.id);
+});
+
+/*var server = socketio(httpserver);
 
 var datastream;
+*/
 /*datastream = fs.createReadStream('data/data.csv');
     datastream
         .pipe(parse({delimiter: ','}))
@@ -39,7 +71,7 @@ var datastream;
           datastream.destroy();
           console.log(count);
 });*/
-
+/*
 var socket;
 
 server.on('connection', socket => {
@@ -60,10 +92,6 @@ app.get('/stopsimulation', (req, res) => {
   //server.close();
   isSimulationEnabled = false;
   res.send("Stopped");
-});
-
-app.get('/receivemedical', (req, res) => {
-    res.send("Started Sending...");
 });
 
 app.get('/startsimulation', (req, res) => {
@@ -109,6 +137,7 @@ app.get('/startsimulation', (req, res) => {
 
     res.send("Success");
 });
+*/
 
 httpserver.listen(8082, () => {
   console.log("Rest Server Started...");
