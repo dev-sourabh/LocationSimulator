@@ -16,6 +16,11 @@ var pusher = new Pusher({
 var subsbus = [];
 var subsroute = [];
 
+const app = express();
+app.use(cors());
+
+const httpserver = require('http').createServer(app);
+
 //const unzipper = require('unzipper');
 
 /*fs.createReadStream('data/data.zip')
@@ -27,12 +32,20 @@ var isSimulationEnabled = false;
 
 function start() {
   var datastream;
+  var count = 0;
 
   datastream = fs.createReadStream('data/data.csv');
   datastream
         .pipe(parse({delimiter: ','}))
         .on('data', (csvrow) => {
-          
+
+          /*var data = { 'bus_id': csvrow[0], 'trip_id': csvrow[1], 'gps_datetime': csvrow[2], 'location': csvrow[3], 'dtd': csvrow[4], 'corridor': csvrow[5], 'longitude': csvrow[6], 'latitude': csvrow[7], 'speed': csvrow[8], 'course': csvrow[9], 'color': csvrow[10]};*/
+
+          //not waiting for 10 sec
+          var inter = setTimeout(() => {
+            console.log(csvrow);
+            clearTimeout(inter);
+          }, 10000);
         })
         .on('end', () => {
           datastream.destroy();
@@ -42,10 +55,9 @@ function start() {
 
 start();
 
-const app = express();
-app.use(cors());
-
-const httpserver = require('http').createServer(app);
+app.get('/', (req, res) => {
+  res.send("API is Running...");
+});
 
 app.get('/subscribe/bus/:id', (req, res) => {
   subsbus.push(req.params.id);
@@ -76,11 +88,6 @@ var socket;
 
 server.on('connection', socket => {
   this.socket = socket;
-});
-
-
-app.get('/', (req, res) => {
-  res.send("API is Running...");
 });
 
 app.get('/stopsimulation', (req, res) => {
