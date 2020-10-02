@@ -22,6 +22,7 @@ app.use(cors());
 const httpserver = require('http').createServer(app);
 
 //const unzipper = require('unzipper');
+//location
 
 /*fs.createReadStream('data/data.zip')
   .pipe(unzipper.Extract({ path: '' }));*/
